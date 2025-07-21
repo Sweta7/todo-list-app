@@ -1,18 +1,33 @@
+import { useSelector } from "react-redux";
 import NewTodoForm from "./NewTodoForm";
 import TodoListItem from "./TodoListItem";
 
-export default function TodoList({ completedTodos, incompleteTodos }) {
+interface TodoListProps {
+  onCreateClicked: (text: string) => void;
+}
+
+export default function TodoList({ onCreateClicked }: TodoListProps) {
+  const todosAreLoading = useSelector(
+    (state) => !state.loading.value.completed
+  );
+  const todos = useSelector((state) => state.todos.value);
   return (
     <div>
-      <NewTodoForm onCreateClicked={(text) => console.log(text)} />
-      <h3>Completed:</h3>
-      {completedTodos.map((todo, index) => (
-        <TodoListItem todo={todo} key={index} />
-      ))}
-      <h3>Incomplete:</h3>
-      {incompleteTodos.map((todo, index) => (
-        <TodoListItem todo={todo} key={index} />
-      ))}
+      <NewTodoForm onCreateClicked={onCreateClicked} />
+      {todosAreLoading ? (
+        <p>Loading ...</p>
+      ) : (
+        <>
+          <h3>Completed:</h3>
+          {todos.map((todo, index) => (
+            <TodoListItem todo={todo} key={index} />
+          ))}
+          <h3>Incomplete:</h3>
+          {todos.map((todo, index) => (
+            <TodoListItem todo={todo} key={index} />
+          ))}
+        </>
+      )}
     </div>
   );
 }

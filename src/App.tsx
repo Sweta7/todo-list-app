@@ -1,26 +1,21 @@
 import { useState } from "react";
 import "./App.css";
 import TodoList from "./TodoList";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loadTodos } from "./thunks";
 
 function App() {
-  const [completedTodos, setCompletedTodos] = useState<
-    { text: string; isCompleted: boolean }[]
-  >([
-    { text: "Learn React", isCompleted: true },
-    { text: "Learn Vite", isCompleted: true },
-  ]);
-  const [incompleteTodos, setIncompleteTodos] = useState<
-    { text: string; isCompleted: boolean }[]
-  >([
-    { text: "Learn TypeScript", isCompleted: false },
-    { text: "Build a Todo App", isCompleted: false },
-  ]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadTodos());
+  }, []);
+  function createTodo(text: string) {
+    console.log("Creating todo:", text);
+  }
   return (
     <>
-      <TodoList
-        completedTodos={completedTodos}
-        incompleteTodos={incompleteTodos}
-      />
+      <TodoList onCreateClicked={createTodo} />
     </>
   );
 }
